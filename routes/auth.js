@@ -30,7 +30,7 @@ const { signup } = require("../controllers/auth");
 
 // router.get("/signout", signout);
 // router.get("/signin", signin);
-router.post("/signup", signup);
+router.post("/signup", signup); 
 // router.get("/signup", signup);
 
 //(req, res) => {
