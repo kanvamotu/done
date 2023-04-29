@@ -25,12 +25,11 @@ const User = require("../models/user");
 exports.signup = (req, res) => {
     const user = new User(req.body)
 
-    user.save((err, user) => {
-   if(err){
-    return res.status(400).json({
-        err: "NOT able to save user in DB "
-    })
-   }
-   res.json(user)
+    user.save().then(function (user) {
+        return res.json(user);
+    }).catch(function (err) {
+        return res.status(400).json({
+            err: `User Already exists for ${req.body.email}`
+        });
     })
 };
