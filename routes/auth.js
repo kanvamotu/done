@@ -5,7 +5,7 @@ const { check, validationResult } = require('express-validator');
 
 const { sign } = require("jsonwebtoken");
 
-const { signin, signup} = require("../controllers/auth");
+const { signin, signup, isSignedIn, signout} = require("../controllers/auth");
 
 
 
@@ -31,6 +31,13 @@ router.post("/signin",
  check("password","password field is required").isLength({ min: 8 }),
 ],
 signin);
+
+
+router.get("/signout", signout);
+
+ router.get("/testroute", isSignedIn, (req, res)=>{
+res.send("a procted route")
+ })
 
 
 //router.get("/signout", signout);
