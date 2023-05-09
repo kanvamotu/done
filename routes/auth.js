@@ -1,41 +1,40 @@
 var express = require("express");
-const { sign } = require("jsonwebtoken");
+
 var router = express.Router();
+const { check, validationResult } = require('express-validator');
 
+const { sign } = require("jsonwebtoken");
 
-// router.get("/signIn",(req, res) => {
-//     res.send("user signIn");
-// });
-const { signin } = require("../controllers/auth");
-
-
-const { signout } = require("../controllers/auth");
-
-
-const { signup } = require("../controllers/auth");
-
-// const signout = (req, res) =>{
-//     res.json({
-//         message : "user signout"
-//     });
-// }
+const { signin, signup} = require("../controllers/auth");
 
 
 
-// const signout = (req, res) =>{
-//     res.send("user signout success");
-// }
 
 
 
-// router.get("/signout", signout);
-// router.get("/signin", signin);
-router.post("/signup", signup); 
-// router.get("/signup", signup);
+router.post("/signup",[
+  check("name","name should be at least 5 char").isLength({ min: 5 }),
+  check("email","email should be at least 5 char").isEmail(),
+  check("password","password should be at least 8 char").isLength({ min: 8 }),
+],
+signup);
+
 
 //(req, res) => {
-  //  res.send("user signout");
+ //  res.send("user signout");
 // });
+
+
+router.post("/signin",
+[
+ check("email","email should be at least 5 char").isEmail(),
+ check("password","password field is required").isLength({ min: 8 }),
+],
+signin);
+
+
+//router.get("/signout", signout);
+
 
 module.exports = router;
 
