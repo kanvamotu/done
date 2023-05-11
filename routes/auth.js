@@ -1,7 +1,7 @@
 var express = require("express");
 
 var router = express.Router();
-const { check, validationResult } = require('express-validator');
+const { check, validationResult } = require("express-validator");
 
 const { sign } = require("jsonwebtoken");
 
@@ -36,7 +36,7 @@ signin);
 router.get("/signout", signout);
 
  router.get("/testroute", isSignedIn, (req, res)=>{
-res.send("a procted route")
+res.json("req.auth");
  })
 
 

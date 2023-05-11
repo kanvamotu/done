@@ -1,8 +1,7 @@
 const User = require("../models/user");
 const { check, validationResult } = require('express-validator');
-const jwt = require('jsonwebtoken');
-const expressJwt = require("express-jwt");
-
+const Jwt = require('jsonwebtoken');
+const { expressjwt: jwt } = require("express-jwt");
 
 exports.signup = (req, res) => {
 
@@ -42,9 +41,10 @@ exports.signin = (req, res) => {
       return res.status(401).json({
         error: `email and password do not match`
       });
-  
-    }
-    const token = jwt.sign({ _id: user._id }, process.env.SECRET)
+  }
+  //create token
+    const token = Jwt.sign({ _id: user._id }, process.env.SECRET)
+    
     //PUT token in cookie
     res.cookie("token", token, { expire: new Date() + 9999 });
     //send responce to front end 
@@ -69,10 +69,10 @@ exports.signout = (req, res) => {
 };
 
 
-exports.isSignedIn = expressJwt => ({
+exports.isSignedIn = jwt =>({
   secret: process.env.SECRET,
   userProperty: "auth"
-    ``
+    
 });
 
 
