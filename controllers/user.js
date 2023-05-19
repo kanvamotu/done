@@ -1,3 +1,4 @@
+//const user = require("../models/user");
 const User = require("../models/user");
 
 exports.getUserById = async (req, res, next, id) => {
@@ -19,15 +20,19 @@ exports.getUser = (req, res) => {
 };
 
 
-exports.UpdateUser = (req, res) => {
-    User.findByIdAndUpdate(
+exports.UpdateUser = async (req, res) => {
+    await User.findByIdAndUpdate(
         { _id: req.profile._id },
         { $set: req.body },
         { new: true, UseFindAndModify: false },
 
-    ).then(function (_id) {
-        if (err)
-            return res
-
+    ).then(function (user) {
+        req.profile = user; 
+        next();
+    }).catch(function (err) {
+        return res.status(400).json({
+            err: `you are not authorized to update this user`
+         })
     })
-}
+    
+};

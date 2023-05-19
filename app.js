@@ -8,7 +8,7 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 
 const authroutes = require("./routes/auth");
-const userroutes = require("./routes/user");
+const userroutes = require("./routes/user"); 
 
 //DB Connection
 mongoose.connect(process.env.DATABASE, {
