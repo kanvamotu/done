@@ -1,4 +1,4 @@
-const category = require("../models/category")
+const Category = require("../models/category")
 
 
 exports.getCategoryById =  async(req, res, next, id) =>{
@@ -18,7 +18,7 @@ exports.getCategoryById =  async(req, res, next, id) =>{
 
 
    exports.createCategory = async (req, res) => {
-    const category = new category(req.body);
+    const category = new Category(req.body);
     await   category.save().then(function ( category) {
             return res.json(category);
             }).catch (function ( err)  {
