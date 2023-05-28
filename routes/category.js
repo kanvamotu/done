@@ -22,9 +22,9 @@ router.param("categoryId", getCategoryById)
 //create
 router.post(
     "/category/create/:userId",
-     isSignedIn, 
-     isAuthenticated,
-     isAdmin,
+    //  isSignedIn, 
+    //  isAuthenticated,
+    //  isAdmin,
      createCategory
      );
 
@@ -33,6 +33,7 @@ router.get("/category/:categoryId", getCategory)
 router.get("/categories", getAllCategory)
 
 //update
+
 router.put("/category/:categoryId/:userId",
 isSignedIn, 
 isAuthenticated,
