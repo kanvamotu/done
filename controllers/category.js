@@ -3,8 +3,8 @@ const Category = require("../models/category")
 
 exports.getCategoryById =  async(req, res, next, id) =>{
 
-    await category.findById(id).then(function (category) {
-    req.category = (category)        
+    await Category.findById(id).then(function (category) {
+    req.Category = (category)        
 
     next();
   
@@ -13,7 +13,7 @@ exports.getCategoryById =  async(req, res, next, id) =>{
         err: `user not id not found`
     })
     });
-    next();
+   
     };
 
 
@@ -28,27 +28,34 @@ exports.getCategoryById =  async(req, res, next, id) =>{
             }) 
             };
 exports.getCategory =  async (req, res) =>{
-        return res.json(req.category);
+    return  res.json(req.body.category)
+    
         };
+
+
 exports.getAllCategory = async (req, res) => {
-await   category.find().then(function ( categories) {
-        req.category = (categories)     
+await   Category.find().then(function ( categories) {
+        req.Category = (categories)     
         next();
         }).catch ( function (err) {
         return res.status(400).json ({
         error: "No categories found"
         })
         })
-    next();
+  
      
 }
 
 exports.updateCategory = async (req, res) => {
-      const category = req.category;
-      category.name = req.body.name;
-await category.save().then( function (updateCategory) {
-      return req.json(updateCategory);
-      }).catch(function (err){
+  const category = new Category(req.body);
+      Category.name = req.body.name;
+await category.save()
+      .then( function (updatedCategory) { 
+     
+      return req.json(updatedCategory);
+      next();
+      })
+      .catch(function (err){
       return res.status(400).json({
         error: "Failed to update Category"
       })  
@@ -57,9 +64,9 @@ await category.save().then( function (updateCategory) {
 
 
 exports.removeCategory = async ( req, res) => {
-       const category = req.category;
+  const category = new Category(req.body);
 
-await  category.remove().then(function (category) {
+await  Category.remove().then(function (category) {
        return req.json(category)({
         massage: "Successfully deleted"
        })
