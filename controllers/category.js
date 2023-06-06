@@ -9,7 +9,7 @@ exports.getCategoryById = async (req, res, next, id) => {
     })
     .catch(function (err) {
       return res.status(400).json({
-        err: `user not id not found`,
+        err: `user  id not found`,
       });
     });
 };
