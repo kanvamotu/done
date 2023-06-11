@@ -153,17 +153,19 @@ exports.getAllProducts = async (req, res) => {
     });
 };
 
-
 exports.getAllUniqueCategories = (req, res) => {
-  Product.distinct(("category", {}).then(function (category) {
-    return res.json(category).json
-  }).catch(function (err){
-    return res.status(400).json({
-      err : "No Category found"
-    })
-  })
-  )
-}
+  Product.distinct(
+    ("category", {})
+      .then(function (category) {
+        return res.json(category).json;
+      })
+      .catch(function (err) {
+        return res.status(400).json({
+          err: "No Category found",
+        });
+      })
+  );
+};
 
 exports.UpdateStock = (req, res, next) => {
   let myOperations = req.body.order.products.map((prod) => {
