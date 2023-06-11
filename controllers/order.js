@@ -29,3 +29,33 @@ exports.createOrder = async (req, res) => {
       });
     });
 };
+
+exports.getAllOrders = async (req, res) => {
+ await Order.find()
+            .populate("user", "id name")
+            .then(function (order) {
+              req.Order = order;
+            }).catch(function (err) {
+              return res.status(400).json ({
+            err:  "No order found in DB"
+              })
+      })
+};
+
+exports.updateStatus = async (req, res) => {
+await  Order.update(
+  { _id: req.body.orderId },
+  {$set: {status: req.body.status}}
+).then(function (order) {
+  return res.json(order)
+}).catch(function (err) {
+  return res.status(400).json ({
+    err: "Cannot update order status"
+  })
+})
+
+};
+
+exports.getOrderStatus = async (req, res) => {
+  res.json(Order.schema.path(" status ").enumValues);
+};
