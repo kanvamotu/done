@@ -27,7 +27,7 @@ router.post(
   createProduct
 );
 
-router.get("/product/productId", getProduct);
+router.get("/product/productId ", getProduct);
 router.get("/product/photo/:productId", photo);
 
 router.put(

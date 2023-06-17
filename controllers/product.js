@@ -182,6 +182,7 @@ exports.UpdateStock = (req, res, next) => {
     {}
       .then(function (products) {
         return res.json(products);
+        
       })
       .catch(function (err) {
         return res.status(400).json({
