@@ -28,14 +28,13 @@ exports.createCategory = async (req, res) => {
     });
 };
 exports.getCategory = async (req, res) => {
-  return res.json(req.body.category);
+  return res.json(req.Category);
 };
 
 exports.getAllCategory = async (req, res) => {
   await Category.find()
     .then(function (categories) {
-      req.Category = categories;
-      next();
+      return res.json(categories);
     })
     .catch(function (err) {
       return res.status(400).json({
@@ -60,17 +59,24 @@ exports.updateCategory = async (req, res) => {
 };
 
 exports.removeCategory = async (req, res) => {
-  const category = req.Category;
+  try {
+    const category = req.Category;
 
-  await Category.deleteOne()
-    .then(function (category) {
-      return res.json(category)({
-        massage: "succesfully deleted",
+    await category.deleteOne()
+      .then(function (category) {
+        return res.json({
+          category: category,
+          massage: "succesfully deleted",
+        });
+      })
+      .catch(function (err) {
+        return res.status(400).json({
+          error: "Failed to Delete This Category",
+        });
       });
-    })
-    .catch(function (err) {
-      return res.status(400).json({
-        error: "Failed to Delete This Category",
-      });
+  } catch (error) {
+    return res.status(400).json({
+      error: "Invalid categoryId passed",
     });
+  }
 };

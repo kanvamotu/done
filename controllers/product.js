@@ -24,7 +24,7 @@ exports.createProduct = (req, res) => {
   let form = new formidable.IncomingForm();
   form.keepExtensions = true;
 
-  form.parse(req, (err, fields, file) => {
+  form.parse(req, async (err, fields, file) => {
     if (err) {
       return res.status(400).json({
         error: "problem with image",
@@ -48,13 +48,14 @@ exports.createProduct = (req, res) => {
           error: "file size is to big!",
         });
       }
-      product.photo.date = fs.readFileSync(file.photo.size);
-      product.photo.contentType = file.photo.type;
+      product.photo.data = fs.readFileSync(file.photo.filepath);
+      product.photo.contentType = file.photo.mimetype;
     }
 
     //save to the DB
-    product.save
+    await product.save()
       .then(function (product) {
+        delete product._doc.photo;
         return res.json(product);
       })
       .catch(function (err) {
@@ -66,32 +67,37 @@ exports.createProduct = (req, res) => {
 };
 
 exports.getProduct = async (req, res) => {
-  req.product.photo = undefined;
-  return res.json(req.product);
+  req.Product.photo = undefined;
+  return res.json(req.Product);
 };
 
-exports.photo = async (req, res, next) => {
-  if (req.product.photo.data) {
-    res.set("Content-Type", req.product.photo.contentType);
-    return res.send(req.product.photo.data);
+exports.photo = async (req, res) => {
+  if (req.Product.photo.data) {
+    res.set("Content-Type", req.Product.photo.contentType);
+    return res.send(req.Product.photo.data);
   }
-  next();
 };
 
 exports.removeProduct = async (req, res) => {
-  let product = req.Product;
-  await product
-    .deleteOne()
-    .then(function (product) {
-      return res.json(product)({
-        massage: "Product Succesfully Deleted ",
+  try {
+    let product = req.Product;
+    await product
+      .deleteOne()
+      .then(function (product) {
+        return res.json(product)({
+          massage: "Product Succesfully Deleted ",
+        });
+      })
+      .catch(function (err) {
+        return res.status(400).json({
+          error: "Failed to Delete This Product",
+        });
       });
-    })
-    .catch(function (err) {
-      return res.status(400).json({
-        error: "Failed to Delete This Product",
-      });
+  } catch (error) {
+    return res.status(400).json({
+      error: "Product already deleted",
     });
+  }
 };
 
 exports.updateProduct = async (req, res) => {
@@ -106,7 +112,7 @@ exports.updateProduct = async (req, res) => {
     }
 
     //restriction on field
-    const product = req.Product;
+    let product = req.Product;
     product = _.extend(product, fields);
 
     //handle file here
@@ -116,13 +122,14 @@ exports.updateProduct = async (req, res) => {
           error: "file size is to big!",
         });
       }
-      product.photo.date = fs.readFileSync(file.photo.size);
-      product.photo.contentType = file.photo.type;
+      product.photo.data = fs.readFileSync(file.photo.filepath);
+      product.photo.contentType = file.photo.mimetype;
     }
 
     //save to the DB
-    product.save
+    product.save()
       .then(function (product) {
+        delete product._doc.photo;
         return res.json(product);
       })
       .catch(function (err) {
@@ -143,8 +150,9 @@ exports.getAllProducts = async (req, res) => {
     .sort([[sortBy, "asc"]])
     .limit(limit)
     .then(function (products) {
-      req.Product = products;
-      next();
+      return res.status(400).json({
+        products: products
+      });
     })
     .catch(function (err) {
       return res.status(400).json({
@@ -154,17 +162,15 @@ exports.getAllProducts = async (req, res) => {
 };
 
 exports.getAllUniqueCategories = (req, res) => {
-  Product.distinct(
-    ("category", {})
-      .then(function (category) {
-        return res.json(category).json;
-      })
-      .catch(function (err) {
-        return res.status(400).json({
-          err: "No Category found",
-        });
-      })
-  );
+  Product.distinct("category", {})
+    .then(function (category) {
+      return res.json(category);
+    })
+    .catch(function (err) {
+      return res.status(400).json({
+        err: "No Category found",
+      });
+    });
 };
 
 exports.UpdateStock = (req, res, next) => {
@@ -182,7 +188,7 @@ exports.UpdateStock = (req, res, next) => {
     {}
       .then(function (products) {
         return res.json(products);
-        
+
       })
       .catch(function (err) {
         return res.status(400).json({

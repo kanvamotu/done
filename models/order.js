@@ -20,12 +20,12 @@ const OrderSchema = new mongoose.Schema(
     status: {
       type: String,
       default: "Recieved",
-      enum: ["Cancelled", "Delivered", "Shipped", "Processing", "Revieved"],
+      enum: ["Cancelled", "Delivered", "Shipped", "Processing", "Recieved"],
     },
     updated: Date,
     user: {
       type: ObjectId,
-      ref: "user",
+      ref: "User",
     },
   },
   { timestamps: true }
@@ -33,4 +33,4 @@ const OrderSchema = new mongoose.Schema(
 
 const Order = mongoose.model("Order", OrderSchema);
 
-module.export = { Order, ProductCart };
+module.exports = { Order, ProductCart };

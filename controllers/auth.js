@@ -17,7 +17,9 @@ exports.signup = (req, res) => {
   user
     .save()
     .then(function (user) {
-      return res.json(user);
+      return res.json({
+        message: 'Signup successful'
+      });
     })
     .catch(function (err) {
       return res.status(400).json({
